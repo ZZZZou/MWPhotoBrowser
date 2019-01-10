@@ -700,6 +700,15 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
     return value;
 }
 
+- (BOOL)shouldSelectPhotoAtIndex:(NSUInteger)index {
+    if (_displaySelectionButtons) {
+        if ([self.delegate respondsToSelector:@selector(photoBrowser:shouldSelectPhotoAtIndex:)]) {
+            return [self.delegate photoBrowser:self shouldSelectPhotoAtIndex:index];
+        }
+    }
+    return YES;
+}
+    
 - (void)setPhotoSelected:(BOOL)selected atIndex:(NSUInteger)index {
     if (_displaySelectionButtons) {
         if ([self.delegate respondsToSelector:@selector(photoBrowser:photoAtIndex:selectedChanged:)]) {
@@ -1152,7 +1161,6 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
 
 - (void)selectedButtonTapped:(id)sender {
     UIButton *selectedButton = (UIButton *)sender;
-    selectedButton.selected = !selectedButton.selected;
     NSUInteger index = NSUIntegerMax;
     for (MWZoomingScrollView *page in _visiblePages) {
         if (page.selectedButton == selectedButton) {
@@ -1160,6 +1168,11 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
             break;
         }
     }
+    
+    BOOL canSelect = [self shouldSelectPhotoAtIndex:index];
+    if (!canSelect) return;
+    
+    selectedButton.selected = !selectedButton.selected;
     if (index != NSUIntegerMax) {
         [self setPhotoSelected:selectedButton.selected atIndex:index];
     }

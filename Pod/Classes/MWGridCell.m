@@ -158,6 +158,9 @@
 }
 
 - (void)selectionButtonPressed {
+    BOOL canSelect = [_gridController.browser shouldSelectPhotoAtIndex:_index];
+    if (!canSelect) return;
+    
     _selectedButton.selected = !_selectedButton.selected;
     [_gridController.browser setPhotoSelected:_selectedButton.selected atIndex:_index];
 }
