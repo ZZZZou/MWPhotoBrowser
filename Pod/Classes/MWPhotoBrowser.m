@@ -1169,7 +1169,10 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
         }
     }
     
-    BOOL canSelect = [self shouldSelectPhotoAtIndex:index];
+    BOOL canSelect = YES;
+    if (!selectedButton.selected) {
+        canSelect = [self shouldSelectPhotoAtIndex:index];
+    }
     if (!canSelect) return;
     
     selectedButton.selected = !selectedButton.selected;
